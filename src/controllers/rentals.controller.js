@@ -127,7 +127,29 @@ export const rentalsController = {
         [returnDate, delayFee, id]
       );
 
-      res.sendStatus(200).send({ message: "Aluguel finalizado!" });
+      res.status(200).send({ message: "Aluguel finalizado!" });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
+  deleteRental: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const rental = await connection.query(
+        `SELECT * FROM rentals WHERE id=$1;`,
+        [id]
+      );
+      if (rental.rowCount === 0) {
+        return res.status(404).send({ message: "Aluguel não encontrado." });
+      }
+
+      if (rental.rows[0].returnDate == null) {
+        return res.status(400).send({ message: "Aluguel em andamento." });
+      }
+
+      await connection.query(`DELETE FROM rentals WHERE id=$1;`, [id]);
+
+      res.status(200).send({ message: "Aluguel deletado!" });
     } catch (err) {
       res.status(500).send(err.message);
     }

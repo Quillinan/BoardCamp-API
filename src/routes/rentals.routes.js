@@ -18,4 +18,7 @@ rentalsRouter.post(
 // Rota para finalizar um aluguel
 rentalsRouter.put("/:id", rentalsController.returnRental);
 
+// Rota para deletar um aluguel
+rentalsRouter.delete("/:id", rentalsController.deleteRental);
+
 export default rentalsRouter;
