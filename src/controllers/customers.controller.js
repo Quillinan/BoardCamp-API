@@ -67,7 +67,19 @@ export const customersController = {
         return res.status(404).json({ error: "Cliente não encontrado." });
       }
 
-      const { name, phone, birthday } = req.body;
+      const { name, phone, birthday, cpf } = req.body;
+
+      const existingCpf = await connection.query(
+        "SELECT * FROM customers WHERE cpf = $1 AND id <> $2",
+        [cpf, customerId]
+      );
+
+      if (existingCpf.rows.length > 0) {
+        return res
+          .status(409)
+          .json({ error: "Já existe outro cliente com o mesmo CPF." });
+      }
+
       const updateQuery =
         "UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5 RETURNING *";
       const values = [name, phone, cpf, birthday, customerId];
