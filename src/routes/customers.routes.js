@@ -18,4 +18,11 @@ customersRouter.post(
   customersController.postCustomer
 );
 
+// Rota para atualizar um cliente
+customersRouter.put(
+  "/:id",
+  validateSchema(customerSchema),
+  customersController.updateCustomer
+);
+
 export default customersRouter;

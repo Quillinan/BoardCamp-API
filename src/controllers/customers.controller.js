@@ -52,4 +52,36 @@ export const customersController = {
         .json({ error: "Erro ao criar cliente.", details: err.message });
     }
   },
+  updateCustomer: async (req, res) => {
+    try {
+      const customerId = req.params.id;
+      const existingCustomer = await connection.query(
+        "SELECT * FROM customers WHERE id = $1",
+        [customerId]
+      );
+
+      if (existingCustomer.rows.length === 0) {
+        return res.status(404).json({ error: "Cliente não encontrado." });
+      }
+
+      const { cpf } = req.body;
+      if (cpf !== existingCustomer.rows[0].cpf) {
+        return res
+          .status(409)
+          .json({ error: "CPF não corresponde ao cliente." });
+      }
+
+      const { name, phone, birthday } = req.body;
+      const updateQuery =
+        "UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5 RETURNING *";
+      const values = [name, phone, cpf, birthday, customerId];
+      const updatedCustomer = await connection.query(updateQuery, values);
+
+      res.status(200).json(updatedCustomer.rows[0]);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ error: "Erro ao atualizar cliente.", details: err.message });
+    }
+  },
 };
