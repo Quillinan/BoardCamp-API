@@ -67,16 +67,6 @@ export const customersController = {
         return res.status(404).json({ error: "Cliente não encontrado." });
       }
 
-      const { cpf } = req.body;
-      const existingCPF = await connection.query(
-        "SELECT * FROM customers WHERE cpf = $1",
-        [cpf]
-      );
-
-      if (existingCPF.rows.length > 0) {
-        return res.status(409).json({ error: "CPF já utilizado." });
-      }
-
       const { name, phone, birthday } = req.body;
       const updateQuery =
         "UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5 RETURNING *";
