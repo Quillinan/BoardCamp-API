@@ -26,7 +26,7 @@ export const gamesController = {
       const values = [name, image, stockTotal, pricePerDay];
       const newGame = await connection.query(insertQuery, values);
 
-      res.status(201).json(newGame.rows[0]);
+      res.status(201).json({ message: "Jogo criado com sucesso!" });
     } catch (err) {
       res
         .status(500)
