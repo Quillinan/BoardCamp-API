@@ -95,4 +95,41 @@ export const rentalsController = {
         .json({ error: "Erro ao criar aluguel.", details: err.message });
     }
   },
+  returnRental: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const rental = await connection.query(
+        `SELECT * FROM rentals WHERE id=$1;`,
+        [id]
+      );
+      if (rental.rowCount === 0) {
+        return res.status(404).send({ message: "Aluguel não encontrado." });
+      }
+
+      if (rental.rows[0].returnDate !== null) {
+        return res.status(400).send({ message: "Aluguel já finalizado." });
+      }
+
+      const { daysRented, rentDate, originalPrice } = rental.rows[0];
+      const pricePerDay = originalPrice / daysRented;
+
+      let delayFee = 0;
+
+      const returnDate = dayjs().format("YYYY-MM-DD");
+      const datesDifference = dayjs().diff(rentDate, "day");
+
+      if (datesDifference > daysRented) {
+        delayFee = pricePerDay * (datesDifference - daysRented);
+      }
+
+      await connection.query(
+        `UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3;`,
+        [returnDate, delayFee, id]
+      );
+
+      res.sendStatus(200).send({ message: "Aluguel finalizado!" });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
 };

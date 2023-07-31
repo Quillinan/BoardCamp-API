@@ -15,4 +15,7 @@ rentalsRouter.post(
   rentalsController.postRental
 );
 
+// Rota para finalizar um aluguel
+rentalsRouter.put("/:id", rentalsController.returnRental);
+
 export default rentalsRouter;
