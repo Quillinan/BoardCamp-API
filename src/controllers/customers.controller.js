@@ -27,29 +27,29 @@ export const customersController = {
         .json({ error: "Erro ao buscar cliente.", details: err.message });
     }
   },
-  // postGame: async (req, res) => {
-  //   try {
-  //     const { name } = req.body;
-  //     const existingGame = await connection.query(
-  //       "SELECT * FROM games WHERE name = $1",
-  //       [name]
-  //     );
+  postCustomer: async (req, res) => {
+    try {
+      const { cpf } = req.body;
+      const existingCustomer = await connection.query(
+        "SELECT * FROM customers WHERE cpf = $1",
+        [cpf]
+      );
 
-  //     if (existingGame.rows.length > 0) {
-  //       return res.status(409).json({ error: "Jogo com esse nome já existe." });
-  //     }
+      if (existingCustomer.rows.length > 0) {
+        return res.status(409).json({ error: "Cliente já existe." });
+      }
 
-  //     const { image, stockTotal, pricePerDay } = req.body;
-  //     const insertQuery =
-  //       'INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4) RETURNING *';
-  //     const values = [name, image, stockTotal, pricePerDay];
-  //     const newGame = await connection.query(insertQuery, values);
+      const { name, phone, birthday } = req.body;
+      const insertQuery =
+        "INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4) RETURNING *";
+      const values = [name, phone, cpf, birthday];
+      const newCustomer = await connection.query(insertQuery, values);
 
-  //     res.status(201).json(newGame.rows[0]);
-  //   } catch (err) {
-  //     res
-  //       .status(500)
-  //       .json({ error: "Erro ao criar jogo.", details: err.message });
-  //   }
-  // },
+      res.status(201).json(newCustomer.rows[0]);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ error: "Erro ao criar cliente.", details: err.message });
+    }
+  },
 };
