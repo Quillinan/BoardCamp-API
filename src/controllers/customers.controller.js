@@ -45,7 +45,7 @@ export const customersController = {
       const values = [name, phone, cpf, birthday];
       const newCustomer = await connection.query(insertQuery, values);
 
-      res.status(201).json(newCustomer.rows[0]);
+      res.status(201).json({ message: "Cliente criado com sucesso!" });
     } catch (err) {
       res
         .status(500)

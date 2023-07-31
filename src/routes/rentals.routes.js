@@ -5,6 +5,9 @@ import { rentalsSchema } from "../schemas/rentals.schema.js";
 
 const rentalsRouter = Router();
 
+// Rota para buscar todos os aluguéis
+rentalsRouter.get("/", rentalsController.getRentals);
+
 // Rota para criar um novo aluguel
 rentalsRouter.post(
   "/",
