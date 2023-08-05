@@ -10,7 +10,7 @@ https://boardcamp-api-lpte.onrender.com
 
 Comandos:
 
-git clone https://github.com/Quillinan/BoardCamp-API.git
-cd BoardCamp-API
-npm i
-npm start
+- git clone https://github.com/Quillinan/BoardCamp-API.git
+- cd BoardCamp-API
+- npm i
+- npm start
